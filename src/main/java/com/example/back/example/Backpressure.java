@@ -12,54 +12,51 @@ import java.time.Duration;
 @Component
 public class Backpressure {
 
-    @SneakyThrows
     public void backpressure_drop() {
         Flux
                 .interval(Duration.ofMillis(1L))
                 .onBackpressureDrop(dropped -> log.info("* on dropped: {}", dropped))
                 .publishOn(Schedulers.parallel())
                 .subscribe(data -> {
-                            processWork();
+                            processWork(5L);
                             loggedNextData(data);
                         },
                         error -> loggedError());
 
-        Thread.sleep(2000L);
+        processWork(2000L);
     }
 
-    @SneakyThrows
     public void backpressure_error() {
         Flux
                 .interval(Duration.ofMillis(1L))
                 .onBackpressureError()
                 .publishOn(Schedulers.parallel())
                 .subscribe(data -> {
-                            processWork();
+                            processWork(5L);
                             loggedNextData(data);
                         },
                         error -> loggedError());
 
-        Thread.sleep(2000L);
+        processWork(2000L);
     }
 
-    @SneakyThrows
     public void backpressure_latest() {
         Flux
                 .interval(Duration.ofMillis(1L))
                 .onBackpressureLatest()
                 .publishOn(Schedulers.parallel())
                 .subscribe(data -> {
-                            processWork();
+                            processWork(5L);
                             loggedNextData(data);
                         },
                         error -> loggedError());
 
-        Thread.sleep(2000L);
+        processWork(2000L);
     }
 
     @SneakyThrows
-    private void processWork() {
-        Thread.sleep(5L);
+    private void processWork(Long t) {
+        Thread.sleep(t);
     }
 
     private void loggedError() {
